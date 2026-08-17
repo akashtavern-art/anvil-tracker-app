@@ -6,10 +6,3 @@ buildscript {
         core_ktx = '1.13.1'
     }
 }
-
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
