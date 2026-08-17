@@ -85,6 +85,10 @@ const CHART_KEY_TO_STORE = {
   workoutProgressChart: 'workout',
   nutritionChart: 'nutrition'
 };
+const APK_REPO_OWNER = 'akashtavern-art';
+const APK_REPO_NAME = 'anvil-tracker-app';
+const APK_RELEASES_URL = `https://github.com/${APK_REPO_OWNER}/${APK_REPO_NAME}/releases/latest`;
+const APK_RELEASE_API_URL = `https://api.github.com/repos/${APK_REPO_OWNER}/${APK_REPO_NAME}/releases/latest`;
 
 const qs = (s) => document.querySelector(s);
 const qsa = (s) => Array.from(document.querySelectorAll(s));
@@ -141,6 +145,42 @@ function applyChartState(chartId, hasData, message) {
 
   const existing = charts[storeKey];
   return existing;
+}
+
+function triggerDownload(url, filename) {
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.target = '_blank';
+  anchor.rel = 'noopener noreferrer';
+  if (filename) {
+    anchor.download = filename;
+  }
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+}
+
+async function handleApkDownload() {
+  showToast('Looking for latest APK release...');
+  try {
+    const response = await fetch(APK_RELEASE_API_URL);
+    if (!response.ok) {
+      throw new Error('release-api');
+    }
+
+    const release = await response.json();
+    const apk = (release.assets || []).find((asset) => /\.apk$/i.test(asset.name || ''));
+    if (apk && apk.browser_download_url) {
+      triggerDownload(apk.browser_download_url, apk.name || 'anvil-tracker-app.apk');
+      showToast('Downloading latest APK...');
+      return;
+    }
+  } catch (_e) {
+    // fallback below
+  }
+
+  window.open(APK_RELEASES_URL, '_blank', 'noopener');
+  showToast('Opening release page. Pick an APK file to download.');
 }
 
 function ensureNumericRange(value, min = 0, max = Number.POSITIVE_INFINITY) {
@@ -1235,6 +1275,8 @@ function wireForms() {
   qsa('.tab').forEach((tab) => {
     tab.addEventListener('click', () => applyTab(tab.dataset.view));
   });
+
+  qs('#downloadApkBtn').addEventListener('click', handleApkDownload);
 
   qs('#startAuditBtn').addEventListener('click', () => {
     currentAuditMode = true;
