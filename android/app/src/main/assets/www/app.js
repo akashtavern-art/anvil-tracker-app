@@ -88,6 +88,7 @@ const CHART_KEY_TO_STORE = {
 const APK_REPO_OWNER = 'akashtavern-art';
 const APK_REPO_NAME = 'anvil-tracker-app';
 const APK_RELEASES_URL = `https://github.com/${APK_REPO_OWNER}/${APK_REPO_NAME}/releases/latest`;
+const APK_REPO_URL = `https://github.com/${APK_REPO_OWNER}/${APK_REPO_NAME}`;
 const APK_RELEASE_API_URL = `https://api.github.com/repos/${APK_REPO_OWNER}/${APK_REPO_NAME}/releases/latest`;
 
 const qs = (s) => document.querySelector(s);
@@ -158,6 +159,10 @@ function triggerDownload(url, filename) {
   document.body.appendChild(anchor);
   anchor.click();
   anchor.remove();
+}
+
+function openReadme() {
+  window.open(APK_REPO_URL, '_blank', 'noopener');
 }
 
 async function handleApkDownload() {
@@ -1276,7 +1281,9 @@ function wireForms() {
     tab.addEventListener('click', () => applyTab(tab.dataset.view));
   });
 
+  qs('#openReadmeBtn').addEventListener('click', openReadme);
   qs('#downloadApkBtn').addEventListener('click', handleApkDownload);
+  qs('#releaseNotesBtn').addEventListener('click', () => window.open(APK_RELEASES_URL, '_blank', 'noopener'));
 
   qs('#startAuditBtn').addEventListener('click', () => {
     currentAuditMode = true;

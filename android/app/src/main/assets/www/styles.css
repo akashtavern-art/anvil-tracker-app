@@ -287,6 +287,19 @@ button:active {
 
 .small-gap { gap: 6px; }
 
+.readme-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tiny-note {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
 .filter-row {
   display: inline-flex;
   gap: 6px;

@@ -306,19 +306,24 @@
 
         <section id="settings" class="screen">
           <article class="card">
+            <h3>Readme</h3>
+            <p>Need build notes, feature list, or a fresh APK? Everything is documented in the project README and latest releases.</p>
+            <div class="actions readme-actions">
+              <button id="openReadmeBtn" class="ghost-btn">Open README</button>
+              <button id="downloadApkBtn" class="primary-btn">Download Android APK</button>
+              <button id="releaseNotesBtn" class="tiny-btn">Release Notes</button>
+            </div>
+            <p class="tiny-note">
+              Download the latest debug APK from releases. For updates, install newer APKs over old previews if prompted by Android.
+            </p>
+          </article>
+
+          <article class="card">
             <h3>Data Vault Export</h3>
             <p>Export all tracking data as JSON and CSV</p>
             <div class="actions">
               <button id="exportBtn" class="primary-btn">Export</button>
               <button id="shareBtn" class="ghost-btn">Share backup files</button>
-            </div>
-          </article>
-
-          <article class="card">
-            <h3>APK Download</h3>
-            <p>Download the latest APK release from this repo.</p>
-            <div class="actions">
-              <button id="downloadApkBtn" class="primary-btn">Download APK</button>
             </div>
           </article>
 
