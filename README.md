@@ -4,6 +4,20 @@ This is a production-oriented hybrid Android app with an HTML/JS frontend hosted
 The app is designed around the **Anvil** theme and includes onboarding, workout tracking, nutrition,
 habit tracking, usage stats, notifications, and backup/export flows.
 
+<div align="center">
+
+[![Download the Android APK](https://img.shields.io/badge/Download%20APK-Now-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://github.com/akashtavern-art/anvil-tracker-app/releases/latest)
+
+</div>
+
+## Get Anvil APK
+
+Need the app quickly? Tap the button above and download the latest APK from the GitHub release page.
+
+- Click **Download APK** above for a one-click jump to latest release.
+- On the release page, pick the latest `app-debug.apk` (or `app-release.apk`) file and install.
+- If Android asks, allow installation from unknown sources.
+
 ## Requirements
 
 - Android Studio or JDK 17
