@@ -6,16 +6,17 @@ habit tracking, usage stats, notifications, and backup/export flows.
 
 <div align="center">
 
-[![Download the Android APK](https://img.shields.io/badge/Download%20APK-Now-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://github.com/akashtavern-art/anvil-tracker-app/releases/latest)
+[![Download the Android APK](https://img.shields.io/badge/Download%20APK-Now-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://github.com/akashtavern-art/anvil-tracker-app/releases/download/latest-apk/anvil-tracker-app-debug.apk)
 
 </div>
 
 ## Get Anvil APK
 
-Need the app quickly? Tap the button above and download the latest APK from the GitHub release page.
+Need the app quickly? Tap the button above to directly download the latest Android APK.
 
-- Click **Download APK** above for a one-click jump to latest release.
-- On the release page, pick the latest `app-debug.apk` (or `app-release.apk`) file and install.
+- Click **Download APK** above to start the download immediately.
+- If the direct file is still being generated, use the fallback release page:
+  `https://github.com/akashtavern-art/anvil-tracker-app/releases`
 - If Android asks, allow installation from unknown sources.
 
 ## Requirements
