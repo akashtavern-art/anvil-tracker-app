@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Anvil</title>
+    <script
+      src="chart.umd.min.js"
+      onerror="(function(){var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js';document.head.appendChild(s);})();"
+    ></script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="app" class="app-shell">
+      <header class="topbar">
+        <div class="topbar-brand">
+          <img src="anvil_neon_icon.png" alt="Anvil logo" class="app-logo" />
+          <h1>Anvil</h1>
+          <p>Built-for-burn performance stack</p>
+        </div>
+        <button id="usageAccessBtn" class="ghost-btn">Request Usage Access</button>
+      </header>
+
+      <nav class="tab-row">
+        <button class="tab active" data-view="dashboard">Dashboard</button>
+        <button class="tab" data-view="workout">Workout</button>
+        <button class="tab" data-view="habits">Habits</button>
+        <button class="tab" data-view="nutrition">Nutrition</button>
+        <button class="tab" data-view="progress">Progress</button>
+        <button class="tab" data-view="settings">Settings</button>
+      </nav>
+
+      <main>
+        <section id="onboardingView" class="panel card hidden">
+          <h2>Start your Anvil setup</h2>
+          <form id="onboardingForm" class="stack">
+            <div class="field-row">
+              <div class="field two-third">
+                <label>Name</label>
+                <input id="nameInput" type="text" placeholder="Your name" required />
+              </div>
+              <div class="field one-third">
+                <label>Birth Year</label>
+                <input id="birthInput" type="number" min="1900" max="2100" value="1990" required />
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label>Height (cm)</label>
+                <div class="odometer-wrap">
+                  <button type="button" class="od-btn" data-target="heightInput" data-delta="-1">-</button>
+                  <input id="heightInput" type="range" min="120" max="230" value="176" />
+                  <div class="odometer-display" id="heightOdo"></div>
+                  <button type="button" class="od-btn" data-target="heightInput" data-delta="1">+</button>
+                </div>
+              </div>
+              <div class="field">
+                <label>Weight (kg)</label>
+                <div class="odometer-wrap">
+                  <button type="button" class="od-btn" data-target="weightInput" data-delta="-1">-</button>
+                  <input id="weightInput" type="range" min="40" max="220" value="78" />
+                  <div class="odometer-display" id="weightOdo"></div>
+                  <button type="button" class="od-btn" data-target="weightInput" data-delta="1">+</button>
+                </div>
+              </div>
+              <div class="field">
+                <label>Net Worth (in M)</label>
+                <div class="odometer-wrap">
+                  <button type="button" class="od-btn" data-target="networthInput" data-delta="-0.01">-</button>
+                  <input id="networthInput" type="range" min="0" max="20" step="0.01" value="1.00" />
+                  <div class="odometer-display" id="netOdo"></div>
+                  <button type="button" class="od-btn" data-target="networthInput" data-delta="0.01">+</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Skills learned</label>
+              <textarea id="skillsInput" rows="3" placeholder="List core growth skills"></textarea>
+            </div>
+
+            <div class="field">
+              <label>Progress photos (max 10)</label>
+              <input id="photoInput" type="file" accept="image/*" multiple />
+              <div id="photoPreview" class="masonry"></div>
+            </div>
+
+            <div class="actions">
+              <button type="submit" class="primary-btn">Save onboarding</button>
+            </div>
+          </form>
+        </section>
+
+        <section id="dashboard" class="screen active">
+          <section class="metrics-grid">
+            <article class="card">
+              <div class="card-head"><h3>Daily Protein</h3></div>
+              <div class="ring-card" id="proteinRing">
+                <svg viewBox="0 0 200 200">
+                  <defs>
+                    <linearGradient id="protGrad" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stop-color="#38bdf8" />
+                      <stop offset="100%" stop-color="#0ea5e9" />
+                    </linearGradient>
+                  </defs>
+                  <circle cx="100" cy="100" r="82"></circle>
+                  <circle cx="100" cy="100" r="82" class="ring-fill" data-ring="protein"></circle>
+                </svg>
+                <div>
+                  <p id="proteinNow">0g</p>
+                  <small>goal 180g</small>
+                </div>
+              </div>
+              <div class="field small-gap">
+                <input id="proteinInput" type="number" placeholder="grams" min="0" />
+                <button data-action="addProtein" class="tiny-btn">Add</button>
+              </div>
+            </article>
+
+            <article class="card">
+              <div class="card-head"><h3>Daily Water</h3></div>
+              <div class="ring-card" id="waterRing">
+                <svg viewBox="0 0 200 200">
+                  <defs>
+                    <linearGradient id="waterGrad" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stop-color="#22d3ee" />
+                      <stop offset="100%" stop-color="#06b6d4" />
+                    </linearGradient>
+                  </defs>
+                  <circle cx="100" cy="100" r="82"></circle>
+                  <circle cx="100" cy="100" r="82" class="ring-fill" data-ring="water"></circle>
+                </svg>
+                <div>
+                  <p id="waterNow">0 L</p>
+                  <small>goal 3L</small>
+                </div>
+              </div>
+              <div class="field small-gap">
+                <input id="waterInput" type="number" step="0.1" placeholder="liters" min="0" />
+                <button data-action="addWater" class="tiny-btn">Add</button>
+              </div>
+            </article>
+
+            <article class="card full-width">
+              <div class="card-head">
+                <h3>Phone Usage (7d)</h3>
+                <div class="filter-row" data-chart="usageChart">
+                  <button class="chip active" data-days="7">7D</button>
+                  <button class="chip" data-days="30">30D</button>
+                  <button class="chip" data-days="365">365D</button>
+                  <button class="chip" data-days="9999">All</button>
+                </div>
+              </div>
+                <div class="chart-container">
+                  <canvas id="usageChart"></canvas>
+                </div>
+            </article>
+          </section>
+
+          <section class="grid-two">
+            <article class="card">
+              <div class="card-head">
+                <h3>Net Worth</h3>
+                <div class="filter-row" data-chart="wealthTrendChart">
+                  <button class="chip active" data-days="7">7D</button>
+                  <button class="chip" data-days="30">30D</button>
+                  <button class="chip" data-days="365">365D</button>
+                  <button class="chip" data-days="9999">All</button>
+                </div>
+              </div>
+              <div class="chart-container">
+                <canvas id="wealthTrendChart"></canvas>
+              </div>
+            </article>
+
+            <article class="card">
+              <div class="card-head">
+                <h3>Streaks</h3>
+              </div>
+              <div class="streak-list" id="streakList"></div>
+            </article>
+          </section>
+
+          <article class="card">
+            <div class="card-head"><h3>Calendar Heatmap</h3></div>
+            <div id="calendarHeatmap"></div>
+          </article>
+        </section>
+
+        <section id="workout" class="screen">
+          <article class="card">
+            <h3>Routine Builder</h3>
+            <form id="workoutForm" class="field-row">
+              <div class="field">
+                <label>Exercise</label>
+                <input id="exerciseName" required placeholder="Bench Press" />
+              </div>
+              <div class="field">
+                <label>Map to Days</label>
+                <select id="exerciseDays" multiple>
+                  <option value="Mon">Mon</option><option value="Tue">Tue</option><option value="Wed">Wed</option>
+                  <option value="Thu">Thu</option><option value="Fri">Fri</option><option value="Sat">Sat</option><option value="Sun">Sun</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Mode</label>
+                <select id="exerciseMode">
+                  <option value="Weight">Weight (kg)</option>
+                  <option value="Time">Time (sec)</option>
+                </select>
+              </div>
+              <div class="actions">
+                <button type="submit" class="tiny-btn">Add Routine</button>
+              </div>
+            </form>
+
+            <div class="field small-gap">
+              <label>Quick log</label>
+              <form id="workoutLogForm" class="field-row">
+                <select id="workoutTarget"></select>
+                <input id="set1" type="number" step="0.5" placeholder="Set 1" min="0" required />
+                <input id="set2" type="number" step="0.5" placeholder="Set 2" min="0" required />
+                <input id="reps" type="number" placeholder="reps to failure" min="1" />
+                <button type="submit" class="tiny-btn">Log</button>
+              </form>
+            </div>
+
+            <div class="split-2">
+              <div class="card compact" id="routineList"></div>
+              <div class="card compact">
+                <div class="card-head">
+                  <h4>Progressive Overload</h4>
+                  <div class="filter-row" data-chart="workoutProgressChart">
+                    <button class="chip active" data-days="14">14D</button>
+                    <button class="chip" data-days="30">30D</button>
+                    <button class="chip" data-days="365">365D</button>
+                    <button class="chip" data-days="9999">All</button>
+                  </div>
+                </div>
+                <select id="workoutChartSelector" class="tiny-select"></select>
+                <div class="chart-container">
+                  <canvas id="workoutProgressChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <section id="habits" class="screen">
+          <article class="card">
+            <h3>Habits & Routine Tasks</h3>
+            <form id="taskForm" class="field-row">
+              <input id="taskName" required placeholder="Task name" />
+              <input id="taskTime" type="time" required />
+              <label class="checkbox"><input id="taskCore" type="checkbox" /> core day</label>
+              <button type="submit" class="tiny-btn">Add task</button>
+            </form>
+            <div id="taskList" class="tasks"></div>
+          </article>
+
+          <article class="card">
+            <h3>Dead Day Audit</h3>
+            <p id="deadDaySummary">No missed core habits yet</p>
+            <div id="deadDays"></div>
+          </article>
+        </section>
+
+        <section id="nutrition" class="screen">
+          <div class="grid-two">
+            <article class="card">
+              <h3>Current body metrics</h3>
+              <div class="field-row">
+                <button id="metricHeight" class="tiny-btn"></button>
+                <button id="metricWeight" class="tiny-btn"></button>
+                <button id="metricWorth" class="tiny-btn"></button>
+              </div>
+            </article>
+
+            <article class="card">
+              <h3>Usage & progress</h3>
+              <div class="filter-row" data-chart="nutritionChart">
+                <button class="chip active" data-days="7">7D</button>
+                <button class="chip" data-days="30">30D</button>
+                <button class="chip" data-days="365">365D</button>
+                <button class="chip" data-days="9999">All</button>
+              </div>
+              <div class="chart-container">
+                <canvas id="nutritionChart"></canvas>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section id="progress" class="screen">
+          <article class="card">
+            <h3>Weekly Shame & Growth Audit</h3>
+            <p id="auditStatus"></p>
+            <button id="startAuditBtn" class="tiny-btn">Open required weekly audit</button>
+          </article>
+          <article class="card">
+            <h3>Progress Photos</h3>
+            <div id="photoGallery" class="masonry"></div>
+          </article>
+        </section>
+
+        <section id="settings" class="screen">
+          <article class="card">
+            <h3>Data Vault Export</h3>
+            <p>Export all tracking data as JSON and CSV</p>
+            <div class="actions">
+              <button id="exportBtn" class="primary-btn">Export</button>
+              <button id="shareBtn" class="ghost-btn">Share backup files</button>
+            </div>
+          </article>
+
+          <article class="card">
+            <h3>Weekly Audio Reflection</h3>
+            <p>30-second reflection recording required by weekly audit.</p>
+            <div class="actions">
+              <button id="startAudio" class="tiny-btn">Start</button>
+              <button id="stopAudio" class="tiny-btn" disabled>Stop</button>
+              <span id="audioStatus">Idle</span>
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <div id="weeklyModal" class="modal hidden">
+      <div class="modal-card card">
+        <h3>Weekly Audit</h3>
+        <p>Update growth metrics and upload one progress photo to finalize your review.</p>
+        <form id="weeklyForm">
+          <div class="field-row">
+            <input id="weeklyHeight" type="number" placeholder="Height cm" required />
+            <input id="weeklyWeight" type="number" placeholder="Weight kg" required />
+            <input id="weeklyWorth" type="number" step="0.01" placeholder="Net Worth in M" required />
+          </div>
+          <textarea id="weeklySkills" rows="2" placeholder="Skills refresh"></textarea>
+          <input id="weeklyPhoto" type="file" accept="image/*" multiple />
+          <div class="actions">
+            <button type="button" id="closeAudit" class="ghost-btn">Skip</button>
+            <button type="submit" class="primary-btn">Lock audit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

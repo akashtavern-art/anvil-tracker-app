@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+set -eu
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+if [ -x "$SCRIPT_DIR/gradle/wrapper/gradle-wrapper.jar" ]; then
+  exec java -classpath "$SCRIPT_DIR/gradle/wrapper/gradle-wrapper.jar" org.gradle.wrapper.GradleWrapperMain "$@"
+fi
+
+if command -v gradle >/dev/null 2>&1; then
+  exec gradle "$@"
+fi
+
+echo "No Gradle wrapper JAR found and gradle command unavailable. Run with Android Studio or install Gradle." >&2
+exit 1

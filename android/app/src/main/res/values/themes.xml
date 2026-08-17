@@ -1,0 +1,10 @@
+<resources>
+    <style name="Theme.Anvil" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:statusBarColor">#090d16</item>
+        <item name="android:navigationBarColor">#090d16</item>
+        <item name="android:windowBackground">#090d16</item>
+        <item name="colorPrimary">#38bdf8</item>
+        <item name="colorPrimaryVariant">#0ea5e9</item>
+        <item name="colorOnPrimary">#0f172a</item>
+    </style>
+</resources>

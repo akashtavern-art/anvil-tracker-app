@@ -1,0 +1,18 @@
+{
+  "name": "anvil",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Anvil - Android WebView-based hybrid wellness and performance tracker",
+  "scripts": {
+    "sync": "./gradlew -p android syncDebug",
+    "apk": "./gradlew -p android assembleDebug",
+    "clean": "./gradlew -p android clean"
+  },
+  "keywords": [
+    "android",
+    "webview",
+    "hybrid",
+    "fitness",
+    "tracker"
+  ]
+}
