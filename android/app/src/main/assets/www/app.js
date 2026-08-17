@@ -324,37 +324,8 @@ function initOdometer(inputId, displayId, parser, formatValue) {
 }
 
 function animateOdometer(target, text) {
-  target.innerHTML = '';
-  const value = text.toString();
-  for (const ch of value) {
-    if (ch === '.' || ch === '$') {
-      const staticCell = document.createElement('span');
-      staticCell.textContent = ch;
-      staticCell.className = 'od-digit-cell';
-      target.appendChild(staticCell);
-      continue;
-    }
-
-    const digit = Number(ch);
-    const col = document.createElement('span');
-    col.className = 'od-digit';
-
-    const track = document.createElement('span');
-    track.className = 'od-digit-track';
-    for (let n = 0; n <= 9; n++) {
-      const cell = document.createElement('span');
-      cell.className = 'od-digit-cell';
-      cell.textContent = String(n);
-      track.appendChild(cell);
-    }
-
-    col.appendChild(track);
-    target.appendChild(col);
-    requestAnimationFrame(() => {
-      const base = parseFloat(getComputedStyle(target).fontSize) * 1.35;
-      track.style.transform = `translateY(-${digit * base}px)`;
-    });
-  }
+  target.textContent = text.toString();
+  target.setAttribute('aria-label', text.toString());
 }
 
 function readPhotoFiles(fileInputId, statePhotosTarget) {
@@ -553,14 +524,27 @@ function getTaskNotificationId(task) {
 
 function ensureDeadDays() {
   const today = new Date(nowString());
-  const last = state.lastDeadCheck ? new Date(state.lastDeadCheck) : addDays(today, -20);
-  const cursor = Number.isFinite(last.getTime()) ? last : addDays(today, -20);
+  if (!state.taskList.length) {
+    state.deadDays = [];
+    state.lastDeadCheck = nowString();
+    return;
+  }
+
+  const last = state.lastDeadCheck ? new Date(state.lastDeadCheck) : today;
+  const cursor = Number.isFinite(last.getTime()) ? last : today;
   const coreIds = getCoreTaskIds();
+  const end = addDays(today, -1);
 
   const start = cursor > today ? today : cursor;
+  if (start > end) {
+    state.deadDays = [...new Set(state.deadDays.filter((date) => date && new Date(date) < today))]
+      .sort((a, b) => new Date(b) - new Date(a));
+    state.lastDeadCheck = nowString();
+    return;
+  }
 
   let current = new Date(start);
-  while (current <= today) {
+  while (current <= end) {
     const key = dayIndex(current);
     const completions = getTaskCompletionsForDate(key);
     const done = isHabitDayComplete(completions, key, coreIds);
@@ -572,7 +556,7 @@ function ensureDeadDays() {
     current = addDays(current, 1);
   }
 
-  state.deadDays = [...new Set(state.deadDays.filter(Boolean))]
+  state.deadDays = [...new Set(state.deadDays.filter((date) => date && new Date(date) < today))]
     .sort((a, b) => new Date(b) - new Date(a));
   state.lastDeadCheck = nowString();
 }
@@ -732,7 +716,7 @@ function drawUsageChart(days) {
   const points = safeData.length ? safeData.map((row) => row.value) : [0];
   const hasData = safeData.length > 0;
   const existing = applyChartState('usageChart', hasData, CHART_EMPTY_TEXT.usageChart);
-  if (!existing) return;
+  if (!hasData) return;
 
   if (existing) {
     existing.data.labels = labels;
@@ -1118,8 +1102,8 @@ function wireForms() {
     };
     if (state.photos.length) state.profile.photoCount = state.photos.length;
     state.onboardingCompleted = true;
+    state.weeklyAudit.lastCompleted = nowString();
     persist();
-    setupWeeklyAuditReminder();
     qs('#onboardingView').classList.add('hidden');
     updateVisibility();
     initAll();
@@ -1392,6 +1376,7 @@ function initAll() {
   initOdometer('heightInput', 'heightOdo', (x) => Number(x), (n) => `${n}`);
   initOdometer('weightInput', 'weightOdo', (x) => Number(x), (n) => `${n}`);
   initOdometer('networthInput', 'netOdo', (x) => Number(x), (n) => `${formatMoneyMills(n)}`);
+  wireForms();
 
   updateVisibility();
   if (!state.onboardingCompleted) {
@@ -1399,7 +1384,6 @@ function initAll() {
     return;
   }
 
-  wireForms();
   refreshAll();
   setupWeeklyAuditReminder();
 }
